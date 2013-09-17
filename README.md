@@ -1,4 +1,4 @@
-fyi.gettingstarted
+gettingstarted
 =========================
 
 This project will create a "hello world" app for all NoServer deployments.
