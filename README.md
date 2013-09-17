@@ -1,9 +1,9 @@
-fyi.objectsandcollections
+fyi.gettingstarted
 =========================
 
-A live application demonstrating the FatfFractal features in the blog of the same name
+This project will create a "hello world" app for all NoServer deployments.
 
-See the blog post <a href = http://fatfractal.com/prod/fyi-datagraph-with-objects-and-collections/ target = _blank>here</a>
+The basic intent is to provide a quick introduction to the functionality that FatFractal provides to help a developer get started on their project.
 
-See the working application <a href = http://fyi.fatfractal.com/objectandcollections/ target = _blank>here</a>
+See the working application <a href = https://fyi.fatfractal.com/gettingstarted/ target = _blank>here</a>
 
