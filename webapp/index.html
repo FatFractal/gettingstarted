@@ -44,33 +44,98 @@
     </a>
     )
   </h4>
+  <h2>Object Types</h2>
   <div class="well" id="ffdl-objecttypes-section">
-    <h2>Object Types</h2>
-    <p>FatFractal NoServer Knows about Object Types</p>
+    <p>FatFractal NoServer Knows about Object Types. There are two ways to add an Object Type to your backend.</p>
     <p><em>Note: Object Types can be schemaless or have a schema validated</em></p>
     <div class="well" id = "ffdl-objecttypes-response"></div>
+    <h3>Add an Object Type using a FFDL command.</h3>
     <div class="well" id = "ffdl-add-objecttype-ffdl-section">
-       Create a new Objecttype using FFDL commands 
+       Create a new Object Type using FFDL commands 
 	   <input id="objecttype-ffdl-input" type="text" class="input-xxlarge search-query" value="CREATE OBJECTTYPE Foo (fooParam STRING)"><br>
        <button id="new-objecttype-ffdl-button" class="btn" onclick="AddObjectType()">Run FFDL!</button>
     </div>
+    <h3>Let your backend automatically learn the Object Type (and Collection).</h3>
     <div class="well" id = "ffdl-add-objecttype-learn-section">
-       Learn an objecttype by storing an object 
+       Learn a new Object Type by storing an object 
 	   <input id="objecttype-learn-input" type="text" class="input-xlarge search-query" value="{clazz:'Bar',barParam:'someString'}">
        In a collection called 
 	   <input id="objecttype-collection-input" type="text" class="input-medium search-query" value="/Bars"><br>
        <button id="new-objecttype-learn-button" class="btn" onclick="LearnObjecttype()">Learn new Object Type!</button>
     </div>
+    <a id="see-metadata-button" class="btn" href="ff/metadata" target="_blank">See API Metadata!</a>
+    <a id="see-prettymetadata-button" class="btn" href="ff/metadata/text" target="_blank">See Prettified API Metadata!</a>
   </div>
+  <h2>Collections</h2>
   <div class="well" id="ffdl-collections-section">
-    <h2>Collections</h2>
-    <p>Objects are stored in Collections</p>
+    <p>Instances of Object Types are stored in Collections. There are also two ways to add a Collection to your backend.</p>
     <p><em>Note: Collections can be "typed" to one or more Object Types or not typed (can contain anything)</em></p>
     <div class="well" id = "ffdl-collections-response"></div>
+    <h3>Add a Collection using a FFDL command.</h3>
+    <div class="well" id = "ffdl-add-collection-ffdl-section">
+        FFDL to add a new collection...
+	   <input id="collection-ffdl-input" type="text" class="input-xxlarge search-query" value="CREATE COLLECTION /Foos OBJECTTYPE Foo"><br>
+       <button id="new-collection-ffdl-button" class="btn" onclick="AddCollection()">Run FFDL!</button>
+    </div>
+    <a id="see-metadata-button" class="btn" href="ff/metadata" target="_blank">See API Metadata!</a>
+    <a id="see-prettymetadata-button" class="btn" href="ff/metadata/text" target="_blank">See Prettified API Metadata!</a>
   </div>
-  <div class="well" id="api-metadata-section">
-    <h2>This shows the entire metadata for your backend</h2>
-    <div class="well" id = "api-metadata-response"></div>
+  <h2>Settings</h2>
+  <div class="well" id="ffdl-settings-section" style="height:160px;">
+    <div class="control-group" id="ffdl-settings-checkbox-group">
+      <div class="controls span3">
+        <label class="checkbox">
+          <input type="checkbox" value="option1" id="ActivateUsersOnReg"> ActivateUsersOnReg
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" value="option2" id="AllowAnonymousGets"> AllowAnonymousGets
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" value="option3" id="AllowAutoRegistration"> AllowAutoRegistration
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" value="option3" id="AllowInactiveGets"> AllowInactiveGets
+        </label>
+      </div>
+      <div class="controls span3">
+        <label class="checkbox">
+          <input type="checkbox" value="option1" id="AllowNewCollections"> AllowNewCollections
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" value="option2" id="AllowNewMembers"> AllowNewMembers
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" value="option3" id="AllowNewObjectTypes"> AllowNewObjectTypes
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" value="option3" id="ApplePushUsingProduction"> ApplePushUsingProduction
+        </label>
+      </div>
+      <div class="controls span3">
+        <label class="checkbox">
+          <input type="checkbox" value="option3" id="CachingEnabled"> CachingEnabled
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" value="option3" id="ETaggingEnabled"> ETaggingEnabled
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" value="option1" id="MaintainCreatedUpdatedBackReferences"> MaintainCreatedUpdatedBackReferences
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" value="option2" id="PasswordValidation"> PasswordValidation
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" value="option3" id="PushIsInactive"> PushIsInactive
+        </label>
+      </div>
+      <div class="clearfix">
+         <button id="update-ffdl-settings-button" class="btn" onclick="UpdateSettings()">Update Settings!</button>
+      </div>
+    </div>
+  </div>
+  <h2>This shows the entire metadata for your backend</h2>
+  <div class="well" id="api-metadata-response">
+  </div>
 </div>
 <!--Scripts-->
 <script src="lib/FatFractal.js"></script>
@@ -91,6 +156,20 @@ function AddObjectType() {
             GetFFDL();
         }, function(code, msg) {
             console.error("AddObjectType() executeFFDL Error: " + code + " " + msg);
+            el.innerHTML = "<div class = 'well red'>Got an error: " + msg + "</div>";
+        });
+    }, function(code, msg) {
+        console.error("Error logging in: " + code + ", error message" + msg);
+    });
+}
+function AddCollection() {
+    var ci = document.getElementById('collection-ffdl-input');
+    var el = document.getElementById('ffdl-collections-response');
+    ff.login("system", "systemsystem", function() {
+        ff.executeFFDL(ci.value, function(resp) {
+            GetFFDL();
+        }, function(code, msg) {
+            console.error("AddCollection() executeFFDL Error: " + code + " " + msg);
             el.innerHTML = "<div class = 'well red'>Got an error: " + msg + "</div>";
         });
     }, function(code, msg) {
@@ -121,6 +200,46 @@ function LearnObjecttype() {
     }, function(code, msg) {
         console.error("Error logging in: " + code + ", error message" + msg);
     });    
+}
+function UpdateSettings() {
+    var ffdlstr = 
+    "SET ActivateUsersOnReg " +
+    ((document.getElementById('ActivateUsersOnReg').checked)?"true":"false") +
+    "\r\nSET AllowAnonymousGets " +
+    ((document.getElementById('AllowAnonymousGets').checked)?"true":"false") +
+    "\r\nSET AllowAutoRegistration " +
+    ((document.getElementById('AllowAutoRegistration').checked)?"true":"false") +
+    "\r\nSET AllowInactiveGets " +
+    ((document.getElementById('AllowInactiveGets').checked)?"true":"false") +
+    "\r\nSET AllowNewCollections " +
+    ((document.getElementById('AllowNewCollections').checked)?"true":"false") +
+    "\r\nSET AllowNewMembers " +
+    ((document.getElementById('AllowNewMembers').checked)?"true":"false") +
+    "\r\nSET AllowNewObjectTypes " +
+    ((document.getElementById('AllowNewObjectTypes').checked)?"true":"false") +
+    "\r\nSET ApplePushUsingProduction " +
+    ((document.getElementById('ApplePushUsingProduction').checked)?"true":"false") +
+    "\r\nSET CachingEnabled " +
+    ((document.getElementById('CachingEnabled').checked)?"true":"false") +
+    "\r\nSET ETaggingEnabled " +
+    ((document.getElementById('ETaggingEnabled').checked)?"true":"false") +
+    "\r\nSET MaintainCreatedUpdatedBackReferences " +
+    ((document.getElementById('MaintainCreatedUpdatedBackReferences').checked)?"true":"false") +
+    "\r\nSET PasswordValidation " +
+    ((document.getElementById('PasswordValidation').checked)?"true":"false") +
+    "\r\nSET PushIsInactive " +
+    ((document.getElementById('PushIsInactive').checked)?"true":"false");
+    console.log(ffdlstr);
+    ff.login("system", "systemsystem", function() {
+        ff.executeFFDL(ffdlstr, function(resp) {
+            GetFFDL();
+        }, function(code, msg) {
+            console.error("AddObjectType() executeFFDL Error: " + code + " " + msg);
+            el.innerHTML = "<div class = 'well red'>Got an error: " + msg + "</div>";
+        });
+    }, function(code, msg) {
+        console.error("Error logging in: " + code + ", error message" + msg);
+    });
 }
 function GetFFDL() {
     ff.getFFDL(function(ffdl) {
@@ -170,8 +289,37 @@ function GetFFDL() {
          for(var i = 0; i < colls.length; i++) {
              var collObjTypes = colls[i].objectTypeNames;
              console.log(collObjTypes.length + " objectTypeNames were retrieved: " + JSON.stringify(collObjTypes));
-             collsEl.innerHTML += "<br>COLLECTION <strong>" + colls[i].collectionName + "</strong> containing " + JSON.stringify(collObjTypes) + " objecttypes.</div>";
+             collsEl.innerHTML += "<br><strong>COLLECTION " + colls[i].collectionName + "</strong> containing " + JSON.stringify(collObjTypes) + " objecttypes.</div>";
          }
+         // Settings
+         var settings = ffdl.settings;
+         console.log("ActivateUsersOnReg: " + settings.ActivateUsersOnReg);
+         console.log("AllowAnonymousGets: " + settings.AllowAnonymousGets);
+         console.log("AllowAutoRegistration: " + settings.AllowAutoRegistration);
+         console.log("AllowInactiveGets: " + settings.AllowInactiveGets);
+         console.log("AllowNewCollections: " + settings.AllowNewCollections);
+         console.log("AllowNewMembers: " + settings.AllowNewMembers);
+         console.log("AllowNewObjectTypes: " + settings.AllowNewObjectTypes);
+         console.log("ApplePushUsingProduction: " + settings.ApplePushUsingProduction);
+         console.log("CachingEnabled: " + settings.CachingEnabled);
+         console.log("ETaggingEnabled: " + settings.ETaggingEnabled);
+         console.log("MaintainCreatedUpdatedBackReferences: " + settings.MaintainCreatedUpdatedBackReferences);
+         console.log("PasswordValidation: " + settings.PasswordValidation);
+         console.log("PushIsInactive: " + settings.PushIsInactive);
+         console.log("ffdl-settings-checkbox-group height: " + document.getElementById('ffdl-settings-checkbox-group').height);
+         document.getElementById('ActivateUsersOnReg').checked = (settings.ActivateUsersOnReg == "true");
+         document.getElementById('AllowAnonymousGets').checked = (settings.AllowAnonymousGets == "true");
+         document.getElementById('AllowAutoRegistration').checked = (settings.AllowAutoRegistration == "true");
+         document.getElementById('AllowInactiveGets').checked = (settings.AllowInactiveGets == "true");
+         document.getElementById('AllowNewCollections').checked = (settings.AllowNewCollections == "true");
+         document.getElementById('AllowNewMembers').checked = (settings.AllowNewMembers == "true");
+         document.getElementById('AllowNewObjectTypes').checked = (settings.AllowNewObjectTypes == "true");
+         document.getElementById('ApplePushUsingProduction').checked = (settings.ApplePushUsingProduction == "true");
+         document.getElementById('CachingEnabled').checked = (settings.CachingEnabled == "true");
+         document.getElementById('ETaggingEnabled').checked = (settings.ETaggingEnabled == "true");
+         document.getElementById('MaintainCreatedUpdatedBackReferences').checked = (settings.MaintainCreatedUpdatedBackReferences == "true");
+         document.getElementById('PasswordValidation').checked = (settings.PasswordValidation == "true");
+         document.getElementById('PushIsInactive').checked = (settings.PushIsInactive == "true");
       }
    }, function(code, msg) {
       collsEl.innerHTML = "<br><div class = 'well red'>Got an error: " + msg + "</div>";

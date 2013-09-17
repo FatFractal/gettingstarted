@@ -16,3 +16,8 @@
 .blue{color:blue;}
 .red{color:red;}
 
+.form-horizontal .control-label {
+  /*original: width: 140px;*/
+  width: 200px;
+}
+
