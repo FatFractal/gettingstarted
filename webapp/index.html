@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en" ng-app="ffConsole">
+<head>
+  <meta charset="utf-8">
+  <title>The FatFractal FYI Test Harness</title>
+  <script type="text/javascript">
+    function httpsRedirect() {
+       var httpURL = window.location.hostname + window.location.pathname;
+       var httpsURL = "https://" + httpURL;
+       window.location = httpsURL;
+    }
+    console.log(window.location.href);
+    console.log(!window.location.href.match('^https://') && !window.location.href.match('^http://localhost'));
+    if (!window.location.href.match('^https://') && !window.location.href.match('^http://localhost'))
+      httpsRedirect();
+  </script>
+  <link rel="stylesheet" href="css/app.css"/>
+  <link href="lib/ui-bootstrap/assets/bootstrap.css" rel="stylesheet" media="screen">
+</head>
+<!--
+<body onunload="cleanUp()">
+-->
+<body>
+<div id="navbar" class="navbar" ng-controller="LoginCtrl">
+  <div class="navbar-inner">
+    <img src="img/beta.png" width="240px" class="brand pull-left">
+    <h1 style="margin: 20px -20px">Test Harness</h1>
+    <div class="span4" ui-if="refreshing" ng-cloak spinner style="margin: 20px -20px"></div>
+  </div>
+</div>
+<div class="well" id="content-section">
+  <h1>FYI - Getting to know your backend</h1>
+  <p>This application lets you play with some of the basic backend functionality of your backend.
+  </p>
+  <h4>You can see the data created by this app using the FatFractal DataBrowser (
+    <a href = https://system.fatfractal.com/console/databrowser/databrowser.html?baseUrl=https://fyi.fatfractal.com/gettingstarted target = _blank>
+      here
+    </a>
+    )
+  </h4>
+  <h4>You can access the source code for the sample application (
+    <a href = https://github.com/FatFractal/fyi.gettingstarted target = _blank>
+      here
+    </a>
+    )
+  </h4>
+  <div class="well" id="ffdl-objecttypes-section">
+    <h2>Object Types</h2>
+    <p>FatFractal NoServer Knows about Object Types</p>
+    <p><em>Note: Object Types can be schemaless or have a schema validated</em></p>
+    <div class="well" id = "ffdl-objecttypes-response"></div>
+    <div class="well" id = "ffdl-add-objecttype-ffdl-section">
+       Create a new Objecttype using FFDL commands 
+	   <input id="objecttype-ffdl-input" type="text" class="input-xxlarge search-query" value="CREATE OBJECTTYPE Foo (fooParam STRING)"><br>
+       <button id="new-objecttype-ffdl-button" class="btn" onclick="AddObjectType()">Run FFDL!</button>
+    </div>
+    <div class="well" id = "ffdl-add-objecttype-learn-section">
+       Learn an objecttype by storing an object 
+	   <input id="objecttype-learn-input" type="text" class="input-xlarge search-query" value="{clazz:'Bar',barParam:'someString'}">
+       In a collection called 
+	   <input id="objecttype-collection-input" type="text" class="input-medium search-query" value="/Bars"><br>
+       <button id="new-objecttype-learn-button" class="btn" onclick="LearnObjecttype()">Learn new Object Type!</button>
+    </div>
+  </div>
+  <div class="well" id="ffdl-collections-section">
+    <h2>Collections</h2>
+    <p>Objects are stored in Collections</p>
+    <p><em>Note: Collections can be "typed" to one or more Object Types or not typed (can contain anything)</em></p>
+    <div class="well" id = "ffdl-collections-response"></div>
+  </div>
+  <div class="well" id="api-metadata-section">
+    <h2>This shows the entire metadata for your backend</h2>
+    <div class="well" id = "api-metadata-response"></div>
+</div>
+<!--Scripts-->
+<script src="lib/FatFractal.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/beautify.js"></script>
+<!--
+<script src="lib/moment.min.js"></script>
+<script src="lib/spin.min.js"></script>
+<script src="resources/en.js"></script>
+-->
+</body>
+<script type="text/javascript">
+function AddObjectType() {
+    var oti = document.getElementById('objecttype-ffdl-input');
+    var el = document.getElementById('ffdl-objecttypes-response');
+    ff.login("system", "systemsystem", function() {
+        ff.executeFFDL(oti.value, function(resp) {
+            GetFFDL();
+        }, function(code, msg) {
+            console.error("AddObjectType() executeFFDL Error: " + code + " " + msg);
+            el.innerHTML = "<div class = 'well red'>Got an error: " + msg + "</div>";
+        });
+    }, function(code, msg) {
+        console.error("Error logging in: " + code + ", error message" + msg);
+    });
+}
+function LearnObjecttype() {
+    var oti = document.getElementById('objecttype-learn-input');
+    var otci = document.getElementById('objecttype-collection-input');
+    var el = document.getElementById('ffdl-objecttypes-response');
+    var obj = null;
+    try {
+        console.log(oti.value);
+        eval("var obj=" + oti.value);
+        console.log("obj clazz is set to: " + obj.clazz)
+        console.log("obj collection is set to: " + otci.value)
+    } catch (error) {
+        console.error(error)
+    }
+
+    ff.login("system", "systemsystem", function() {
+        ff.createObjAtUri(obj, otci.value, function(resp) {
+            GetFFDL();
+        }, function(code, msg) {
+            console.error("AddObjectType() executeFFDL Error: " + code + " " + msg);
+            el.innerHTML = "<div class = 'well red'>Got an error: " + msg + "</div>";
+        });
+    }, function(code, msg) {
+        console.error("Error logging in: " + code + ", error message" + msg);
+    });    
+}
+function GetFFDL() {
+    ff.getFFDL(function(ffdl) {
+      console.log("FFDL data was retrieved: " + JSON.stringify(ffdl));
+      var str = "";
+      var elStr = "";
+      var obj;
+      if(ffdl == null) alert("Not able to retrieve FFDL data!");
+      else {
+         // Full metadata
+         var ffdlEl = document.getElementById('api-metadata-response');
+         ffdlEl.innerHTML = "Your backend API metadata is ";
+         var ffdlStr = js_beautify(JSON.stringify(ffdl), {
+            indent_size: 4,
+            indent_char: '&nbsp;',
+            linefeed_char: '<br>'
+         });
+         ffdlEl.innerHTML += ffdlStr;
+         // Object Types
+         var objTypes = ffdl.objectTypes;
+         var objTypesEl = document.getElementById('ffdl-objecttypes-response');
+         var len = 0;
+         console.log(objTypes.length + " objectTypes were retrieved: " + JSON.stringify(objTypes));
+         var membersString = "";
+         var exclMembers = ["array","class",]
+         for(var i = 0; i < objTypes.length; i++) {
+             console.log(objTypes.length + " objectTypes were retrieved: " + JSON.stringify(objTypes));
+             if(objTypes[i].objectTypeName != "*") {
+                 len++;
+                 elStr += "<br><strong>OBJECTTYPE " + objTypes[i].objectTypeName + "</strong> (";
+                 var fs = objTypes[i].fields;
+                 for(var j = 0; j < fs.length; j++) {
+                     elStr += fs[j].fieldName + " " + fs[j].memberType;
+                     if(fs[j].memberType == "GRABBAG" && fs[j].collectionName) elStr += " " + fs[j].collectionName;
+                     if(j < (fs.length - 1)) elStr += ", "
+                 }
+                 elStr += ")";
+             }
+         }
+         objTypesEl.innerHTML = "Your backend understands " + len + " <strong>Object Types</strong>:" + elStr;
+         // Collections
+         var colls = ffdl.collectionResources;
+         var collsEl = document.getElementById('ffdl-collections-response');
+         collsEl.innerHTML = "Your backend understands " + colls.length + " <strong>Collections</strong>";
+         console.log(colls.length + " collectionResources were retrieved: " + JSON.stringify(colls));
+         var typesString = "";
+         for(var i = 0; i < colls.length; i++) {
+             var collObjTypes = colls[i].objectTypeNames;
+             console.log(collObjTypes.length + " objectTypeNames were retrieved: " + JSON.stringify(collObjTypes));
+             collsEl.innerHTML += "<br>COLLECTION <strong>" + colls[i].collectionName + "</strong> containing " + JSON.stringify(collObjTypes) + " objecttypes.</div>";
+         }
+      }
+   }, function(code, msg) {
+      collsEl.innerHTML = "<br><div class = 'well red'>Got an error: " + msg + "</div>";
+      console.error("getActorsFromFavs() getArrayFromUri Error: " + code + " " + msg);
+   });
+}
+var ff = new FatFractal();
+function cleanup(e) {
+   var leave_message = 'Thanks for visiting! \nAll test data has been deleted.';
+   ff.getObjFromExtension("/ff/ext/cleanup", function(resp) {
+   }, function(code, msg) {
+      console.error("cleanup error: " + msg);
+   });
+   return leave_message;
+}
+window.onbeforeunload=cleanup;
+GetFFDL();
+</script>
+</html>
