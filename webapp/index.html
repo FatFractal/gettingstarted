@@ -203,32 +203,19 @@ function LearnObjecttype() {
 }
 function UpdateSettings() {
     var ffdlstr = 
-    "SET ActivateUsersOnReg " +
-    ((document.getElementById('ActivateUsersOnReg').checked)?"true":"false") +
-    "\r\nSET AllowAnonymousGets " +
-    ((document.getElementById('AllowAnonymousGets').checked)?"true":"false") +
-    "\r\nSET AllowAutoRegistration " +
-    ((document.getElementById('AllowAutoRegistration').checked)?"true":"false") +
-    "\r\nSET AllowInactiveGets " +
-    ((document.getElementById('AllowInactiveGets').checked)?"true":"false") +
-    "\r\nSET AllowNewCollections " +
-    ((document.getElementById('AllowNewCollections').checked)?"true":"false") +
-    "\r\nSET AllowNewMembers " +
-    ((document.getElementById('AllowNewMembers').checked)?"true":"false") +
-    "\r\nSET AllowNewObjectTypes " +
-    ((document.getElementById('AllowNewObjectTypes').checked)?"true":"false") +
-    "\r\nSET ApplePushUsingProduction " +
-    ((document.getElementById('ApplePushUsingProduction').checked)?"true":"false") +
-    "\r\nSET CachingEnabled " +
-    ((document.getElementById('CachingEnabled').checked)?"true":"false") +
-    "\r\nSET ETaggingEnabled " +
-    ((document.getElementById('ETaggingEnabled').checked)?"true":"false") +
-    "\r\nSET MaintainCreatedUpdatedBackReferences " +
-    ((document.getElementById('MaintainCreatedUpdatedBackReferences').checked)?"true":"false") +
-    "\r\nSET PasswordValidation " +
-    ((document.getElementById('PasswordValidation').checked)?"true":"false") +
-    "\r\nSET PushIsInactive " +
-    ((document.getElementById('PushIsInactive').checked)?"true":"false");
+    "SET ActivateUsersOnReg " + ((document.getElementById('ActivateUsersOnReg').checked)?"true":"false") +
+    "\r\nSET AllowAnonymousGets " + ((document.getElementById('AllowAnonymousGets').checked)?"true":"false") +
+    "\r\nSET AllowAutoRegistration " + ((document.getElementById('AllowAutoRegistration').checked)?"true":"false") +
+    "\r\nSET AllowInactiveGets " + ((document.getElementById('AllowInactiveGets').checked)?"true":"false") +
+    "\r\nSET AllowNewCollections " + ((document.getElementById('AllowNewCollections').checked)?"true":"false") +
+    "\r\nSET AllowNewMembers " + ((document.getElementById('AllowNewMembers').checked)?"true":"false") +
+    "\r\nSET AllowNewObjectTypes " + ((document.getElementById('AllowNewObjectTypes').checked)?"true":"false") +
+    "\r\nSET ApplePushUsingProduction " + ((document.getElementById('ApplePushUsingProduction').checked)?"true":"false") +
+    "\r\nSET CachingEnabled " + ((document.getElementById('CachingEnabled').checked)?"true":"false") +
+    "\r\nSET ETaggingEnabled " + ((document.getElementById('ETaggingEnabled').checked)?"true":"false") +
+    "\r\nSET MaintainCreatedUpdatedBackReferences " + ((document.getElementById('MaintainCreatedUpdatedBackReferences').checked)?"true":"false") +
+    "\r\nSET PasswordValidation " + ((document.getElementById('PasswordValidation').checked)?"true":"false") +
+    "\r\nSET PushIsInactive " + ((document.getElementById('PushIsInactive').checked)?"true":"false") + "\r\n";
     console.log(ffdlstr);
     ff.login("system", "systemsystem", function() {
         ff.executeFFDL(ffdlstr, function(resp) {
@@ -289,24 +276,12 @@ function GetFFDL() {
          for(var i = 0; i < colls.length; i++) {
              var collObjTypes = colls[i].objectTypeNames;
              console.log(collObjTypes.length + " objectTypeNames were retrieved: " + JSON.stringify(collObjTypes));
-             collsEl.innerHTML += "<br><strong>COLLECTION " + colls[i].collectionName + "</strong> containing " + JSON.stringify(collObjTypes) + " objecttypes.</div>";
+             collsEl.innerHTML += "<br><strong>COLLECTION " + colls[i].collectionName + 
+                 "</strong> containing " + JSON.stringify(collObjTypes) + " objecttypes.</div>";
          }
          // Settings
          var settings = ffdl.settings;
-         console.log("ActivateUsersOnReg: " + settings.ActivateUsersOnReg);
-         console.log("AllowAnonymousGets: " + settings.AllowAnonymousGets);
-         console.log("AllowAutoRegistration: " + settings.AllowAutoRegistration);
-         console.log("AllowInactiveGets: " + settings.AllowInactiveGets);
-         console.log("AllowNewCollections: " + settings.AllowNewCollections);
-         console.log("AllowNewMembers: " + settings.AllowNewMembers);
-         console.log("AllowNewObjectTypes: " + settings.AllowNewObjectTypes);
-         console.log("ApplePushUsingProduction: " + settings.ApplePushUsingProduction);
-         console.log("CachingEnabled: " + settings.CachingEnabled);
-         console.log("ETaggingEnabled: " + settings.ETaggingEnabled);
-         console.log("MaintainCreatedUpdatedBackReferences: " + settings.MaintainCreatedUpdatedBackReferences);
-         console.log("PasswordValidation: " + settings.PasswordValidation);
-         console.log("PushIsInactive: " + settings.PushIsInactive);
-         console.log("ffdl-settings-checkbox-group height: " + document.getElementById('ffdl-settings-checkbox-group').height);
+         console.log("Settings are currently: " + settings);
          document.getElementById('ActivateUsersOnReg').checked = (settings.ActivateUsersOnReg == "true");
          document.getElementById('AllowAnonymousGets').checked = (settings.AllowAnonymousGets == "true");
          document.getElementById('AllowAutoRegistration').checked = (settings.AllowAutoRegistration == "true");
